@@ -1,0 +1,98 @@
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:f12fafc764c64f25aab39bfd88bcdbd5
+<OFX>
+<SIGNONMSGSRSV1>
+<SONRS>
+<STATUS>
+<CODE>0
+<SEVERITY>INFO
+<MESSAGE>Successful Sign On
+</STATUS>
+<DTSERVER>{{ now.strftime('%Y%m%d') }}000000
+<LANGUAGE>ENG
+<DTPROFUP>20010918083000
+<FI>
+<ORG>broker.com
+</FI>
+</SONRS>
+</SIGNONMSGSRSV1>
+<INVSTMTMSGSRSV1>
+<INVSTMTTRNRS>
+<TRNUID>785839d5e7a345b1b71520a253bb4a77
+<STATUS>
+<CODE>0
+<SEVERITY>INFO
+</STATUS>
+<CLTCOOKIE>4
+<INVSTMTRS>
+<DTASOF>{{ now.strftime('%Y%m%d') }}
+<CURDEF>USD
+<INVACCTFROM>
+<BROKERID>dummybroker.com
+<ACCTID>0123456789
+</INVACCTFROM>
+<INVPOSLIST>
+{% for stock in stocks %}
+{% if 'MF' == stock.type %}
+<POSMF>
+{% else %}
+<POSSTOCK>
+{% endif %}
+<INVPOS>
+<SECID>
+<UNIQUEID>{{ stock.symbol }}
+<UNIQUEIDTYPE>TICKER
+</SECID>
+<HELDINACCT>CASH
+<POSTYPE>LONG
+<UNITS>0
+<UNITPRICE>{{ stock.close_price }}
+<MKTVAL>{{ stock.close_price }}
+<DTPRICEASOF>{{ stock.date.strftime('%Y%m%d') }}000000.000[-5:EST]
+</INVPOS>
+{% if 'MF' == stock.type %}
+</POSMF>
+{% else %}
+</POSSTOCK>
+{% endif %}
+{% endfor %}
+</INVPOSLIST>
+</INVSTMTRS>
+</INVSTMTTRNRS>
+</INVSTMTMSGSRSV1>
+<SECLISTMSGSRSV1>
+<SECLIST>
+
+{% for stock in stocks %}
+{% if 'MF' == stock.type %}
+<MFINFO>
+{% else %}
+<STOCKINFO>
+{% endif %}
+<SECINFO>
+<SECID>
+<UNIQUEID>{{ stock.symbol }}
+<UNIQUEIDTYPE>TICKER
+</SECID>
+<SECNAME>{{ stock.symbol }}
+<TICKER>{{ stock.symbol }}
+<UNITPRICE>{{ stock.close_price }}
+<DTASOF>{{ stock.date.strftime('%Y%m%d') }}000000.000[-5:EST]
+</SECINFO>
+{% if 'MF' == stock.type %}
+</MFINFO>
+{% else %}
+</STOCKINFO>
+{% endif %}
+{% endfor %}
+
+</SECLIST>
+</SECLISTMSGSRSV1>
+</OFX>
